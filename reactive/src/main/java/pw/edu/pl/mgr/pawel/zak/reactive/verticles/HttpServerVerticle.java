@@ -22,7 +22,7 @@ public class HttpServerVerticle extends AbstractVerticle {
   private String dbQueue = "db.queue";
 
   @Override
-  public void start(Promise<Void> promise) throws Exception {
+  public void start(Promise<Void> promise) {
 
     dbQueue = config().getString(CONFIG_DB_QUEUE, "db.queue");
 
@@ -79,10 +79,10 @@ public class HttpServerVerticle extends AbstractVerticle {
             .put("date_time", dateTime);
           context.response().setStatusCode(200);
         } else {
-          context.response().setStatusCode(404);
+          context.response().setStatusCode(200);
           response
-            .put("success", false)
-            .put("error", "There is no data for day " + dateTime + "and pair " + pair);
+            .put("success", true)
+            .put("warn", "There is no data for day " + dateTime + "and pair " + pair);
         }
       } else {
         response
@@ -124,9 +124,9 @@ public class HttpServerVerticle extends AbstractVerticle {
             .put("dimension", dimension);
           context.response().setStatusCode(200);
         } else {
-          context.response().setStatusCode(404);
+          context.response().setStatusCode(200);
           response
-            .put("success", false)
+            .put("success", true)
             .put("error", "There is no data for days " + requestedFrom + " " + requestedUntil + " for pair " + pair);
         }
       } else {

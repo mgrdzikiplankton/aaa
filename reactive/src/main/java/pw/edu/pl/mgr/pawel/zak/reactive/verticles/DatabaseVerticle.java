@@ -127,8 +127,13 @@ public class DatabaseVerticle extends AbstractVerticle {
 
   private void fetchRate(Message<JsonObject> message) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    LocalDateTime dateTime = LocalDateTime.parse(message.body().getString("date_time"), formatter);
+    LocalDateTime dateTime = null;
 
+    try {
+      dateTime = LocalDateTime.parse(message.body().getString("date_time"), formatter);
+    } catch (Error e) {
+      message.fail(ErrorCodesEnum.WRONG_INPUT.ordinal(), e.getMessage());
+    }
     String pair = message.body().getString("pair");
 
     Tuple params = Tuple.of(PairEnum.valueOf(pair).getIndx(), dateTime);
@@ -157,8 +162,14 @@ public class DatabaseVerticle extends AbstractVerticle {
 
   private void fetchAverage(Message<JsonObject> message) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    LocalDateTime from = LocalDateTime.parse(message.body().getString("from"), formatter);
-    LocalDateTime until = LocalDateTime.parse(message.body().getString("until"), formatter);
+    LocalDateTime from = null;
+    LocalDateTime until = null;
+    try {
+      from = LocalDateTime.parse(message.body().getString("from"), formatter);
+      until = LocalDateTime.parse(message.body().getString("until"), formatter);
+    } catch (Error e) {
+      message.fail(ErrorCodesEnum.WRONG_INPUT.ordinal(), e.getMessage());
+    }
     String pair = message.body().getString("pair");
     String dimension = message.body().getString("dimension");
 
